@@ -27,6 +27,27 @@ def is_prime(N):
     return N in primeKeys
 
 
+def is_prime_no_memo(N):
+    if N == 2 or N == 3:
+        return True
+    if N < 2 or N % 2 == 0:
+        return False
+    if N < 9:
+        return True
+    if N % 3 == 0:
+        return False
+    a = int(N ** 0.5)
+    b = 5
+    while b <= a:
+        print('\t', b)
+        if N % b == 0:
+            return False
+        if N % (b + 2) == 0:
+            return False
+        b = b + 6
+    return True
+
+
 def factorize(N):
     global primeKeys
     dividers = []
@@ -45,6 +66,7 @@ def factorize(N):
         dividers.append(N)
 
     return dividers
+
 
 def factorize_as_powers_of_primes(N):
     powers = {}
@@ -65,7 +87,7 @@ def GetCoPrimes(N, upperLimit):
     a = [True] * upperLimit
 
     for f in factorsOfN:
-        a[f-1] = False
+        a[f - 1] = False
         for j in range(f + f - 1, upperLimit, f):
             a[j] = False
 
