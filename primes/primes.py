@@ -68,10 +68,11 @@ def GetCoPrimes(N, upperLimit):
     factorsOfN = set(factorize(N))
     upperLimit = int(math.ceil(upperLimit))
 
-    a = [j not in factorsOfN for j in range(1, upperLimit)]
+    a = [True] * upperLimit
 
     for f in factorsOfN:
-        for j in range(f + f - 1, upperLimit - 1, f):
+        a[f-1] = False
+        for j in range(f + f - 1, upperLimit, f):
             a[j] = False
 
     result = [i + 1 for (i, isRelativelyPrime) in enumerate(a) if a[i]]
