@@ -1,0 +1,209 @@
+# 26.11.2022
+
+import math
+import itertools
+import bitarray
+
+def clear_cash():
+    global primeKeys, __biggestPrime, __seed
+    primeKeys = dict()
+    __biggestPrime = 3
+    __seed = 1
+    primeKeys[2] = 3
+    primeKeys[3] = None
+
+clear_cash()
+
+def IsPrime(N):
+    global primeKeys
+    while __biggestPrime <= N:
+        __ExtendListOfPrimes()
+    return N in primeKeys
+
+
+def Factorize(N):
+    global primeKeys
+    dividers = []
+    limit = int(math.sqrt(N)) + 1
+    l = limit
+
+    for pr in GeneratePrimesBelow(limit):
+        if pr > l:
+            break
+        while N % pr == 0:
+            N = N // pr
+            dividers.append(pr)
+        l = int(math.sqrt(N)) + 1
+
+    if N != 1:
+        dividers.append(N)
+
+    return dividers
+
+
+def IsRelativelyPrime(a, b):
+    aFactors = Factorize(a)
+    bFactors = Factorize(b)
+    for aFctr in aFactors:
+        if aFctr in bFactors:
+            return False
+
+    return True
+
+
+def GetCoPrimes(N, upperLimit):
+    factorsOfN = set(Factorize(N))
+    upperLimit = int(math.ceil(upperLimit))
+
+    a = [j not in factorsOfN for j in range(1, upperLimit)]
+
+    for f in factorsOfN:
+        for j in range(f + f - 1, upperLimit - 1, f):
+            a[j] = False
+
+    result = [i + 1 for (i, isRelativelyPrime) in enumerate(a) if a[i]]
+
+    return result
+
+
+def GetTotient(N):
+    factors = Factorize(N)
+    totientFactors = set((1 - 1 / x) for x in factors)
+    return round(N * __getProduct(totientFactors))
+
+
+def GetAllFactors(N):
+    if N == 1:
+        return {1}
+    primeFactors = Factorize(N)
+    allPrimeFactorCombs = __powerset(primeFactors)
+    allFactors = set(__getProduct(comb) for comb in allPrimeFactorCombs)
+    allFactors.add(1)
+    return allFactors
+
+
+def GetProperFactors(N):
+    if N == 1:
+        return {1}
+    allFactors = GetAllFactors(N)
+    allFactors.remove(N)
+    return allFactors
+
+
+def generator():
+    global __biggestPrime
+    i = 2
+    yield 2
+    while True:
+        if primeKeys[i] is None:
+            __ExtendListOfPrimes()
+        i = primeKeys[i]
+        yield i
+
+
+def GeneratePrimesBelow(N):
+    if N < 2:
+        return []
+    while __biggestPrime <= N:
+        __ExtendListOfPrimes()
+    activePrime = 2
+    while activePrime < N:
+        yield activePrime
+        activePrime = primeKeys[activePrime]
+
+
+def GenerateNPrimes(N):
+    while len(primeKeys) < N:
+        __ExtendListOfPrimes()
+    activePrime = 2
+    for i in range(0, N):
+        yield activePrime
+        activePrime = primeKeys[activePrime]
+
+
+def MemorizePrimesBelowLimit(limit):
+    global __biggestPrime, __seed, primeKeys
+    a = bitarray.bitarray(limit, endian='little')  # Initialize the primality list
+    a.setall(True)
+    a[0] = a[1] = False
+
+    for (i, isprime) in enumerate(a):
+        if isprime:
+            for n in range(i * i, limit, i):  # Mark factors non-prime
+                a[n] = False
+
+    nextPrime = None
+    for i in range(limit - 1, 4, -1):
+        if a[i]:
+            primeKeys[i] = nextPrime
+            nextPrime = i
+    primeKeys[3] = 5
+
+    for i in range(limit - 1, 4, -1):
+        if a[i]:
+            __biggestPrime = i
+            __seed = (limit - 1) // 6
+            break
+
+def get_biggest_memorized_prime():
+    global __biggestPrime
+    return __biggestPrime
+
+def __ExtendListOfPrimes():
+    global __biggestPrime, __seed
+    foundSome = False
+    while not foundSome:
+        tested1 = __seed * 6 - 1
+        tested2 = __seed * 6 + 1
+        if __IsNewPrime(tested1):
+            primeKeys[__biggestPrime] = tested1
+            __biggestPrime = tested1
+            primeKeys[tested1] = None
+            foundSome = True
+        if __IsNewPrime(tested2):
+            primeKeys[__biggestPrime] = tested2
+            __biggestPrime = tested2
+            primeKeys[tested2] = None
+            foundSome = True
+        __seed += 1
+
+
+def __getProduct(iterable):
+    p = 1
+    for i in iterable:
+        p *= i
+    return p
+
+
+def __powerset(iterable):
+    s = list(iterable)
+    return tuple(
+        itertools.chain.from_iterable(
+            itertools.combinations(s, r) for r in range(1,
+                                                        len(s) + 1)))
+
+
+def __IsNewPrime(x):
+    if x % 2 == 0:
+        return False
+    limit = int(math.sqrt(x))
+
+    activePrime = 2
+    while activePrime <= limit:
+        if x % activePrime == 0:
+            return False
+        if primeKeys[activePrime] is None:
+            break
+        activePrime = primeKeys[activePrime]
+
+    if activePrime > limit:
+        return True
+
+    testNumber = __biggestPrime + 4
+    while testNumber <= limit:
+        if x % testNumber == 0:
+            return False
+        testNumber += 2
+
+    return True
+
