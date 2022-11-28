@@ -20,14 +20,14 @@ def clear_cash():
     primeKeys[3] = None
 
 
-def IsPrime(N):
+def is_prime(N):
     global primeKeys
     while __biggestPrime <= N:
         __ExtendListOfPrimes()
     return N in primeKeys
 
 
-def Factorize(N):
+def factorize(N):
     global primeKeys
     dividers = []
     limit = int(math.sqrt(N)) + 1
@@ -46,10 +46,17 @@ def Factorize(N):
 
     return dividers
 
+def factorize_as_powers_of_primes(N):
+    powers = {}
+    for f in factorize(N):
+        powers.setdefault(f, 0)
+        powers[f] += 1
+    return powers
+
 
 def IsRelativelyPrime(a, b):
-    aFactors = Factorize(a)
-    bFactors = Factorize(b)
+    aFactors = factorize(a)
+    bFactors = factorize(b)
     for aFctr in aFactors:
         if aFctr in bFactors:
             return False
@@ -58,7 +65,7 @@ def IsRelativelyPrime(a, b):
 
 
 def GetCoPrimes(N, upperLimit):
-    factorsOfN = set(Factorize(N))
+    factorsOfN = set(factorize(N))
     upperLimit = int(math.ceil(upperLimit))
 
     a = [j not in factorsOfN for j in range(1, upperLimit)]
@@ -73,7 +80,7 @@ def GetCoPrimes(N, upperLimit):
 
 
 def GetTotient(N):
-    factors = Factorize(N)
+    factors = factorize(N)
     totientFactors = set((1 - 1 / x) for x in factors)
     return round(N * __getProduct(totientFactors))
 
@@ -81,7 +88,7 @@ def GetTotient(N):
 def GetAllFactors(N):
     if N == 1:
         return {1}
-    primeFactors = Factorize(N)
+    primeFactors = factorize(N)
     allPrimeFactorCombs = __powerset(primeFactors)
     allFactors = set(__getProduct(comb) for comb in allPrimeFactorCombs)
     allFactors.add(1)
@@ -114,7 +121,7 @@ def greatest_common_denominator_with_factorization(*numbers):
     factor_lists = []
 
     for number in numbers:
-        factor_lists.append(Factorize(number))
+        factor_lists.append(factorize(number))
 
     factors_of_first = factor_lists[0].copy()
 
