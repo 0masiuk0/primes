@@ -54,14 +54,8 @@ def factorize_as_powers_of_primes(N):
     return powers
 
 
-def IsRelativelyPrime(a, b):
-    aFactors = factorize(a)
-    bFactors = factorize(b)
-    for aFctr in aFactors:
-        if aFctr in bFactors:
-            return False
-
-    return True
+def is_coprime(a, b):
+    return greatest_common_denominator_Euclid(a, b) == 1
 
 
 def GetCoPrimes(N, upperLimit):
