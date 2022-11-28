@@ -4,6 +4,13 @@ import math
 import itertools
 import bitarray
 
+primeKeys = dict()
+__biggestPrime = 3
+__seed = 1
+primeKeys[2] = 3
+primeKeys[3] = None
+
+
 def clear_cash():
     global primeKeys, __biggestPrime, __seed
     primeKeys = dict()
@@ -12,7 +19,6 @@ def clear_cash():
     primeKeys[2] = 3
     primeKeys[3] = None
 
-clear_cash()
 
 def IsPrime(N):
     global primeKeys
@@ -90,6 +96,38 @@ def GetProperFactors(N):
     return allFactors
 
 
+def greatest_common_denominator_Euclid(a, b):
+    while a != 0 and b != 0:
+        if a > b:
+            a = a % b
+        else:
+            b = b % a
+
+    print(a + b)
+
+
+def greatest_common_denominator_with_factorization(*numbers):
+    if len(numbers) < 2:
+        raise ValueError('Too little numbers are given tp fin GCD.')
+
+    common_factors = []
+    factor_lists = []
+
+    for number in numbers:
+        factor_lists.append(Factorize(number))
+
+    factors_of_first = factor_lists[0].copy()
+
+    for factor in factors_of_first:
+        if False not in (factor in factors for factors in factor_lists[1:]):
+            common_factors.append(factor)
+            for factors in factor_lists:
+                factors.remove(factor)
+
+    result = __getProduct(common_factors) if len(common_factors) > 0 else 1
+    return result
+
+
 def generator():
     global __biggestPrime
     i = 2
@@ -145,9 +183,11 @@ def MemorizePrimesBelowLimit(limit):
             __seed = (limit - 1) // 6
             break
 
+
 def get_biggest_memorized_prime():
     global __biggestPrime
     return __biggestPrime
+
 
 def __ExtendListOfPrimes():
     global __biggestPrime, __seed
@@ -206,4 +246,3 @@ def __IsNewPrime(x):
         testNumber += 2
 
     return True
-
