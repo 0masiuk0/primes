@@ -39,7 +39,6 @@ def is_prime_no_memo(N):
     a = math.isqrt(N)
     b = 5
     while b <= a:
-        print('\t', b)
         if N % b == 0:
             return False
         if N % (b + 2) == 0:
@@ -127,7 +126,7 @@ def greatest_common_denominator_Euclid(a, b):
         else:
             b = b % a
 
-    print(a + b)
+    return a + b
 
 
 def greatest_common_denominator_with_factorization(*numbers):
