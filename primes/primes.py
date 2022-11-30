@@ -119,7 +119,7 @@ def GetProperFactors(N):
     return allFactors
 
 
-def greatest_common_denominator_Euclid(a, b):
+def __greatest_common_denominator_Euclid(a, b):
     while a != 0 and b != 0:
         if a > b:
             a = a % b
@@ -129,9 +129,12 @@ def greatest_common_denominator_Euclid(a, b):
     return a + b
 
 
-def greatest_common_denominator_with_factorization(*numbers):
+def greatest_common_denominator(*numbers):
     if len(numbers) < 2:
         raise ValueError('Too little numbers are given tp fin GCD.')
+        
+    if len(numbers == 2:
+           return __greatest_common_denominator_Euclid(numbers[0], numbers[1])
 
     common_factors = []
     factor_lists = []
@@ -142,7 +145,7 @@ def greatest_common_denominator_with_factorization(*numbers):
     factors_of_first = factor_lists[0].copy()
 
     for factor in factors_of_first:
-        if False not in (factor in factors for factors in factor_lists[1:]):
+        if all(factor in factors for factors in factor_lists[1:]):
             common_factors.append(factor)
             for factors in factor_lists:
                 factors.remove(factor)
