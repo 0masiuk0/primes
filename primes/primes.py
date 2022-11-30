@@ -129,7 +129,7 @@ def __greatest_common_denominator_Euclid(a, b):
     return a + b
 
 
-def greatest_common_denominator(*numbers):
+def greatest_common_denominator(numbers):
     if len(numbers) < 2:
         raise ValueError('Too little numbers are given tp fin GCD.')
         
