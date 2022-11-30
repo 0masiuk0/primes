@@ -23,7 +23,7 @@ def clear_cash():
 def is_prime(N):
     global primeKeys
     while __biggestPrime <= N:
-        __ExtendListOfPrimes()
+        __extend_list_of_primes()
     return N in primeKeys
 
 
@@ -53,7 +53,7 @@ def factorize(N):
     limit = int(math.sqrt(N)) + 1
     l = limit
 
-    for pr in GeneratePrimesBelow(limit):
+    for pr in generate_primes_below(limit):
         if pr > l:
             break
         while N % pr == 0:
@@ -76,18 +76,18 @@ def factorize_as_powers_of_primes(N):
 
 
 def is_coprime(a, b):
-    return greatest_common_denominator_Euclid(a, b) == 1
+    return __greatest_common_denominator_Euclid(a, b) == 1
 
 
-def GetCoPrimes(N, upperLimit):
+def get_co_primes(N, upper_limit):
     factorsOfN = set(factorize(N))
-    upperLimit = int(math.ceil(upperLimit))
+    upper_limit = int(math.ceil(upper_limit))
 
-    a = [True] * upperLimit
+    a = [True] * upper_limit
 
     for f in factorsOfN:
         a[f - 1] = False
-        for j in range(f + f - 1, upperLimit, f):
+        for j in range(f + f - 1, upper_limit, f):
             a[j] = False
 
     result = [i + 1 for (i, isRelativelyPrime) in enumerate(a) if a[i]]
@@ -95,26 +95,26 @@ def GetCoPrimes(N, upperLimit):
     return result
 
 
-def GetTotient(N):
+def get_totient(N):
     factors = factorize(N)
     totientFactors = set((1 - 1 / x) for x in factors)
-    return round(N * __getProduct(totientFactors))
+    return round(N * __get_product(totientFactors))
 
 
-def GetAllFactors(N):
+def get_all_factors(N):
     if N == 1:
         return {1}
     primeFactors = factorize(N)
     allPrimeFactorCombs = __powerset(primeFactors)
-    allFactors = set(__getProduct(comb) for comb in allPrimeFactorCombs)
+    allFactors = set(__get_product(comb) for comb in allPrimeFactorCombs)
     allFactors.add(1)
     return allFactors
 
 
-def GetProperFactors(N):
+def get_proper_factors(N):
     if N == 1:
         return {1}
-    allFactors = GetAllFactors(N)
+    allFactors = get_all_factors(N)
     allFactors.remove(N)
     return allFactors
 
@@ -133,8 +133,8 @@ def greatest_common_denominator(*numbers):
     if len(numbers) < 2:
         raise ValueError('Too little numbers are given tp fin GCD.')
         
-    if len(numbers == 2:
-           return __greatest_common_denominator_Euclid(numbers[0], numbers[1])
+    if len(numbers) == 2:
+        return __greatest_common_denominator_Euclid(numbers[0], numbers[1])
 
     common_factors = []
     factor_lists = []
@@ -150,7 +150,7 @@ def greatest_common_denominator(*numbers):
             for factors in factor_lists:
                 factors.remove(factor)
 
-    result = __getProduct(common_factors) if len(common_factors) > 0 else 1
+    result = __get_product(common_factors) if len(common_factors) > 0 else 1
     return result
 
 
@@ -160,32 +160,32 @@ def generator():
     yield 2
     while True:
         if primeKeys[i] is None:
-            __ExtendListOfPrimes()
+            __extend_list_of_primes()
         i = primeKeys[i]
         yield i
 
 
-def GeneratePrimesBelow(N):
+def generate_primes_below(N):
     if N < 2:
         return []
     while __biggestPrime <= N:
-        __ExtendListOfPrimes()
-    activePrime = 2
-    while activePrime < N:
-        yield activePrime
-        activePrime = primeKeys[activePrime]
+        __extend_list_of_primes()
+    active_prime = 2
+    while active_prime < N:
+        yield active_prime
+        active_prime = primeKeys[active_prime]
 
 
-def GenerateNPrimes(N):
+def generate_N_primes(N):
     while len(primeKeys) < N:
-        __ExtendListOfPrimes()
+        __extend_list_of_primes()
     activePrime = 2
     for i in range(0, N):
         yield activePrime
         activePrime = primeKeys[activePrime]
 
 
-def MemorizePrimesBelowLimit(limit):
+def memorize_primes_below_limit(limit):
     global __biggestPrime, __seed, primeKeys
     a = bitarray.bitarray(limit, endian='little')  # Initialize the primality list
     a.setall(True)
@@ -196,11 +196,11 @@ def MemorizePrimesBelowLimit(limit):
             for n in range(i * i, limit, i):  # Mark factors non-prime
                 a[n] = False
 
-    nextPrime = None
+    next_prime = None
     for i in range(limit - 1, 4, -1):
         if a[i]:
-            primeKeys[i] = nextPrime
-            nextPrime = i
+            primeKeys[i] = next_prime
+            next_prime = i
     primeKeys[3] = 5
 
     for i in range(limit - 1, 4, -1):
@@ -215,26 +215,26 @@ def get_biggest_memorized_prime():
     return __biggestPrime
 
 
-def __ExtendListOfPrimes():
+def __extend_list_of_primes():
     global __biggestPrime, __seed
-    foundSome = False
-    while not foundSome:
+    found_some = False
+    while not found_some:
         tested1 = __seed * 6 - 1
         tested2 = __seed * 6 + 1
-        if __IsNewPrime(tested1):
+        if __is_newfound_prime(tested1):
             primeKeys[__biggestPrime] = tested1
             __biggestPrime = tested1
             primeKeys[tested1] = None
-            foundSome = True
-        if __IsNewPrime(tested2):
+            found_some = True
+        if __is_newfound_prime(tested2):
             primeKeys[__biggestPrime] = tested2
             __biggestPrime = tested2
             primeKeys[tested2] = None
-            foundSome = True
+            found_some = True
         __seed += 1
 
 
-def __getProduct(iterable):
+def __get_product(iterable):
     p = 1
     for i in iterable:
         p *= i
@@ -249,26 +249,26 @@ def __powerset(iterable):
                                                         len(s) + 1)))
 
 
-def __IsNewPrime(x):
+def __is_newfound_prime(x):
     if x % 2 == 0:
         return False
     limit = int(math.sqrt(x))
 
-    activePrime = 2
-    while activePrime <= limit:
-        if x % activePrime == 0:
+    active_prime = 2
+    while active_prime <= limit:
+        if x % active_prime == 0:
             return False
-        if primeKeys[activePrime] is None:
+        if primeKeys[active_prime] is None:
             break
-        activePrime = primeKeys[activePrime]
+        active_prime = primeKeys[active_prime]
 
-    if activePrime > limit:
+    if active_prime > limit:
         return True
 
-    testNumber = __biggestPrime + 4
-    while testNumber <= limit:
-        if x % testNumber == 0:
+    test_number = __biggestPrime + 4
+    while test_number <= limit:
+        if x % test_number == 0:
             return False
-        testNumber += 2
+        test_number += 2
 
     return True
