@@ -50,7 +50,7 @@ def is_prime_no_memo(N):
 def factorize(N):
     global primeKeys
     dividers = []
-    limit = int(math.sqrt(N)) + 1
+    limit = int(math.isqrt(N)) + 1
     l = limit
 
     for pr in generate_primes_below(limit):
@@ -59,7 +59,7 @@ def factorize(N):
         while N % pr == 0:
             N = N // pr
             dividers.append(pr)
-        l = int(math.sqrt(N)) + 1
+        l = int(math.isqrt(N)) + 1
 
     if N != 1:
         dividers.append(N)
