@@ -1,1 +1,1 @@
-
+from primes import *
