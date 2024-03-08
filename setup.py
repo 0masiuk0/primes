@@ -9,4 +9,5 @@ setup(
     author='masiuk',
     author_email='',
     description='Primes and factorization related functions with memorization',
+    long_description=open('README.md').read(),
     install_requires=['bitarray'])
