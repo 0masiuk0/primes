@@ -96,8 +96,8 @@ def get_co_primes(N, upper_limit):
 
 
 def get_totient(N):
-    factors = factorize(N)
-    totientFactors = set((1 - 1 / x) for x in factors)
+    factors = set(factorize(N))
+    totientFactors = (1 - 1 / x for x in factors)
     return round(N * __get_product(totientFactors))
 
 
